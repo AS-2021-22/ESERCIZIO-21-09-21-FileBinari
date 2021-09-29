@@ -17,10 +17,23 @@ string atos(char a[]) {
     return r;
 }
 
+void updateCollection() {
+    fstream csvOut("map.csv", ios::out);
+    if (csvOut.is_open()) {
+        for (map<string, int>::iterator it = collection.begin(); it != collection.end(); it++) {
+            csvOut << it->first << ',' << it->second << endl;
+        }
+        csvOut.close();
+    }
+}
+
 void writeOnFIle(Dato& data) {
     fstream BinaryFileW("Data.bin", ios::app | ios::binary);
     if (BinaryFileW.is_open()) {    //write on bin
         BinaryFileW.seekp(0, ios::end); //posiziono alla fine del file
+
+        //BinaryFileW.seekp(20 * sizeof(Dato), ios::beg);
+
         collection.insert(pair<string, int>(atos(data.CF), BinaryFileW.tellp() / sizeof(Dato))); //inserisco nella mappa CF come chiave e posizione come valore
         updateCollection();
         BinaryFileW.write((char*)&data, sizeof(Dato)); //scrivo su file nell'ultima posizione
@@ -55,16 +68,6 @@ void LoadCollection() { //loads all the key-values from the dictionary | CSV fil
             collection.insert(pair<string, int>(skey, stoi(svalue)));
         }
         in.close();
-    }
-}
-
-void updateCollection() {
-    fstream csvOut("map.csv", ios::out);
-    if (csvOut.is_open()) {
-        for (map<string, int>::iterator it = collection.begin(); it != collection.end(); it++) {
-            csvOut <<it->first << ',' << it->second << endl;
-        }
-        csvOut.close();
     }
 }
 
