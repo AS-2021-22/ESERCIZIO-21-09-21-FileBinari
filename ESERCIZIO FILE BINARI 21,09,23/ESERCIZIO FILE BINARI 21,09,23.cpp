@@ -4,6 +4,7 @@
 #include <map>
 #include <sstream>
 #include <stdlib.h>
+#include <functional>
 //#include <vector>
 
 using namespace std;
@@ -15,6 +16,12 @@ string atos(char a[]) {
     string r = "";
     for (int i = 0; a[i] != '\0'; i++)r += a[i];
     return r;
+}
+
+string hashString(string CF) {
+    size_t a = hash<string>{}(CF);
+    string hash = to_string(a);
+    return hash;
 }
 
 void updateCollection() {
