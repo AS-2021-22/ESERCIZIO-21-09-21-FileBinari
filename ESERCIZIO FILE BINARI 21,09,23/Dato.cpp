@@ -1,8 +1,10 @@
 #include "Dato.h"
 #include <iostream>
-#include <string>
+
 
 using namespace std;
+
+
 
 Dato::Dato() {
 
