@@ -40,6 +40,13 @@ void LoadTestData() {
     for (int i = 0; i < 4; i++)writeDataOnFile(a[i]);
 }
 
+void printAllDato() {
+    for (map<string, int>::iterator it = collection.begin(); it != collection.end(); it++) {
+        try { readFromFile(it->first).print(); }
+        catch (...) { cout << "index: " << it->first << " not found" << endl; }
+    }
+}
+
 
 int main()
 {
@@ -57,15 +64,13 @@ int main()
             }
         }
         else if (n == 2) {
-            for (map<string, int>::iterator it = collection.begin(); it != collection.end(); it++) {
-                try { readFromFile(it->first).print(); }
-                catch (...) { cout << "index: " << it->first << " not found" << endl; }
-            }
+
+            printAllDato();
         }
         else if (n == 3) {
             string CF;
             cout << "Insert CF of the user: "; cin >> CF;
-            try { readFromFile("3RMGNN03A21H910M").print(); }
+            try { readFromFile(CF).print(); }
             catch (...) {
                 cout << "index not found" << endl;
             }
@@ -115,17 +120,11 @@ void updateCollection() {
 
 void writeOnFile(Dato& data,int pos) {
     fstream BinaryFileW(NAME_FILE_DATA,ios::in | ios::out | ios::binary);
-    if (BinaryFileW.is_open()) {    //write on bin
-
-        BinaryFileW.seekp(0, ios::end); //default n = eof
-        int n = BinaryFileW.tellp();
+    if (BinaryFileW.is_open()) {    //write on bin      
+        int n = DB_COLLECTION * sizeof(Dato); //default n = eof
         if(pos != -1) n = pos * sizeof(Dato);
         BinaryFileW.seekp(n);
-        cout << " after: " << BinaryFileW.tellp() <<endl;
-
         BinaryFileW.write((char*)&data, sizeof(Dato));
-
-        
         BinaryFileW.close();
     }
 }
@@ -135,6 +134,8 @@ void writeDataOnFile(Dato& data) {
     if (!positionIsFree(pos)) {
         pos = -1;
     }
+    //HARDCODE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO: delete this line
+    //pos = -1;
     collection.insert(pair<string, int>(atos(data.CF), pos)); //inserisco nella mappa CF come chiave e posizione come valore
     writeOnFile(data, pos);
     updateCollection();
@@ -152,17 +153,41 @@ bool positionIsFree(int pos) { //true if the position is free
     else return false;
 }
 
+Dato collisionMinusOnePosition(string CF) {
+    Dato searched; int counter = 0;
+    int eof = DB_COLLECTION * sizeof(Dato);
+    bool trovato = false;
+    fstream searchFile(NAME_FILE_DATA, ios::in | ios::binary);
+    while (trovato == false && !searchFile.eof()) {
+        searchFile.seekg(eof + counter * sizeof(Dato));
+        searchFile.read((char*)&searched,sizeof(Dato));
+        if (atos(searched.CF) == CF) trovato = true;
+        counter++;
+    }
+    searchFile.close();
+    return searched;
+}
+
 Dato readFromFile(string CF) {
     int pos = collection[CF];
-    fstream BinaryFileR(NAME_FILE_DATA, ios::in | ios::binary);
-    if (BinaryFileR.is_open()) {
-        Dato r;
-        BinaryFileR.seekg(pos * sizeof(Dato), ios::beg);
-        BinaryFileR.read((char*)&r, sizeof(Dato));
-        r.print();
-        return r;
+    if (pos == 0) { //when there is no CF in the collection
+        return Dato();
     }
-    else throw "No item found";
+    else if (pos == -1) { //when the data is in the staging
+        return collisionMinusOnePosition(CF);
+    }
+    else {
+        fstream BinaryFileR(NAME_FILE_DATA, ios::in | ios::binary);
+        if (BinaryFileR.is_open()) {
+            Dato r;
+            BinaryFileR.seekg(pos * sizeof(Dato), ios::beg);
+            BinaryFileR.read((char*)&r, sizeof(Dato));
+            //r.print();
+            return r;
+        }
+        else return Dato();
+    }
+    
 }
 
 void LoadCollection() { //loads all the key-values from the dictionary | CSV file reading
@@ -217,7 +242,6 @@ int menu() {
     }
     return scelta;
 }
-
 
 void createEmptyFile() {
     fstream clr(NAME_FILE_DATA, ios::out | ios::binary);
