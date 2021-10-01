@@ -29,24 +29,8 @@ Dato readFromFile(string CF);
 string atos(char a[]);
 void createEmptyFile();
 void writeDataOnFile(Dato& data);
-void LoadTestData() {
-    Dato a[] = {
-         Dato("CRMGNN03A21H910M","Giovanni","Carminati","5IB","Lavapiatti","Rifugio Laghi Gemelli","15-06-21 / 06-09-21"),
-         Dato("BLTDVD03A20H910B","Davide","Belotti","5IB","Palestra","Sangiovanni bianco","15-06-21 / 06-09-21"),
-         Dato("FSNGNN03T23B157Z","Giovanni","Fusini","5IB","Pulito magazzini","Azienda SRL","15-06-21 / 06-09-21"),
-         Dato("SCTDVD03R14A794X","Davide","Scotti","5IB","C# programming","Azienda ricca","15-06-21 / 06-09-21")
-    };
-
-    for (int i = 0; i < 4; i++)writeDataOnFile(a[i]);
-}
-
-void printAllDato() {
-    for (map<string, int>::iterator it = collection.begin(); it != collection.end(); it++) {
-        try { readFromFile(it->first).print(); }
-        catch (...) { cout << "index: " << it->first << " not found" << endl; }
-    }
-}
-
+void LoadTestData();
+void printAllDato();
 
 int main()
 {
@@ -54,7 +38,7 @@ int main()
     LoadCollection();
     //LoadTestData();
     int n = 0;
-    while (n != 5) {
+    while (n != 6) {
         n = menu();
         system("cls");
         if (n == 1)
@@ -64,7 +48,6 @@ int main()
             }
         }
         else if (n == 2) {
-
             printAllDato();
         }
         else if (n == 3) {
@@ -72,11 +55,17 @@ int main()
             cout << "Insert CF of the user: "; cin >> CF;
             try { readFromFile(CF).print(); }
             catch (...) {
-                cout << "index not found" << endl;
+                cout << "User not found" << endl;
             }
         }
         else if (n == 4) {
             insertDato();
+        }
+        else if (n == 5) {
+            string CF;
+            cout << "Insert CF of the user: "; cin >> CF;
+            collection.erase(CF);
+            updateCollection();
         }
         else {
             cout << "updating map.csv ....";
@@ -171,7 +160,7 @@ Dato collisionMinusOnePosition(string CF) {
 Dato readFromFile(string CF) {
     int pos = collection[CF];
     if (pos == 0) { //when there is no CF in the collection
-        return Dato();
+        throw "CF not found";
     }
     else if (pos == -1) { //when the data is in the staging
         return collisionMinusOnePosition(CF);
@@ -185,7 +174,7 @@ Dato readFromFile(string CF) {
             //r.print();
             return r;
         }
-        else return Dato();
+        throw "CF not found";
     }
     
 }
@@ -235,8 +224,9 @@ int menu() {
     cout << "2. Print all the users informations:" << endl;
     cout << "3. Print a specific user information:" << endl;
     cout << "4. Add an user:" << endl;
-    cout << "5. Exit:" << endl;
-    while (scelta < 1 || scelta>5) {
+    cout << "5. Delete an user:" << endl;
+    cout << "6. Exit:" << endl;
+    while (scelta < 1 || scelta>6) {
         scelta = 0;
         cin >> scelta;
     }
@@ -260,3 +250,20 @@ void createEmptyFile() {
     }
 }
 
+void LoadTestData() {
+    Dato a[] = {
+         Dato("CRMGNN03A21H910M","Giovanni","Carminati","5IB","Lavapiatti","Rifugio Laghi Gemelli","15-06-21 / 06-09-21"),
+         Dato("BLTDVD03A20H910B","Davide","Belotti","5IB","Palestra","Sangiovanni bianco","15-06-21 / 06-09-21"),
+         Dato("FSNGNN03T23B157Z","Giovanni","Fusini","5IB","Pulito magazzini","Azienda SRL","15-06-21 / 06-09-21"),
+         Dato("SCTDVD03R14A794X","Davide","Scotti","5IB","C# programming","Azienda ricca","15-06-21 / 06-09-21")
+    };
+
+    for (int i = 0; i < 4; i++)writeDataOnFile(a[i]);
+}
+
+void printAllDato() {
+    for (map<string, int>::iterator it = collection.begin(); it != collection.end(); it++) {
+        try { readFromFile(it->first).print(); }
+        catch (...) { cout << "index: " << it->first << " not found" << endl; }
+    }
+}
