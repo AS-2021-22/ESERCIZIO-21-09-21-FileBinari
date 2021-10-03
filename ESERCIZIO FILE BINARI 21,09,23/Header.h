@@ -17,6 +17,9 @@ using namespace std;
 #define FUNCTIONS_DECLARATIONS
 
 int menu();
+void updateDato(int pos, Dato dato);
+int searchPosDato(string CF);
+int posInOverflow(string CF);
 bool positionIsFree(int pos);
 void insertDato();
 string hashString(string CF);
@@ -31,5 +34,8 @@ void createEmptyFile();
 void writeDataOnFile(Dato& data);
 void LoadTestData();
 void printAllDato();
+void copy(char a[], const char* b);
+
+void copy(char a[], string b);
 
 #endif // !FUNCTIONS_DECLARETIONS

@@ -44,11 +44,12 @@ int menu() {
     cout << "Select the operation:" << endl;
     cout << "1. Show the collection map (key-values)" << endl;
     cout << "2. Print all the users informations:" << endl;
-    cout << "3. Print a specific user information:" << endl;
-    cout << "4. Add an user:" << endl;
-    cout << "5. Delete an user:" << endl;
-    cout << "6. Exit:" << endl;
-    while (scelta < 1 || scelta>6) {
+    cout << "3. SEARCH - Print a specific user information:" << endl;
+    cout << "4. INSERT - Add an user:" << endl;
+    cout << "5. DELETE - Delete an user:" << endl;
+    cout << "6. UPDATE - Update an user:" << endl;
+    cout << "7. Exit:" << endl;
+    while (scelta < 1 || scelta>7) {
         scelta = 0;
         cin >> scelta;
     }
@@ -71,4 +72,16 @@ void printAllDato() {
         try { readFromFile(it->first).print(); }
         catch (...) { cout << "index: " << it->first << " not found" << endl; }
     }
+}
+
+void copy(char a[], const char* b) {
+    int i;
+    for (i = 0; *(b + i) != '\0'; i++)a[i] = *(b + i);
+    a[i] = '\0';
+}
+
+void copy(char a[], string b) {
+    int i;
+    for (i = 0; b[i] != '\0'; i++)a[i] = b[i];
+    a[i] = '\0';
 }

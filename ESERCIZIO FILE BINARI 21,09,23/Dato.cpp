@@ -1,4 +1,5 @@
 #include "Dato.h"
+#include "Header.h"
 #include <iostream>
 
 
@@ -20,18 +21,6 @@ void Dato::print() {
 	cout << "sede: " << sede << endl;
 	cout << "periodo: " << periodo << endl;
 	cout << ".............................." << endl;
-}
-
-void copy(char a[], const char* b) {
-	int i;
-	for (i = 0; *(b + i) != '\0'; i++)a[i] = *(b + i);
-	a[i] = '\0';
-}
-
-void copy(char a[], string b) {
-	int i;
-	for (i = 0; b[i] != '\0'; i++)a[i] = b[i];
-	a[i] = '\0';
 }
 
 Dato::Dato(string CF, string nome, string cognome, string classe, string nomeProgetto, string sede, string periodo) {

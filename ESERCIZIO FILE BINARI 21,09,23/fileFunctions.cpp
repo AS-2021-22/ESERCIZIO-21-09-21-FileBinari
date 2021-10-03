@@ -20,12 +20,13 @@ void createEmptyFile() {
 Dato readFromFile(string CF) {
     int pos = collection[CF];
     if (pos == 0) { //when there is no CF in the collection
+        collection.erase(CF);
         throw "CF not found";
     }
-    else if (pos == -1) { //when the data is in the staging
+    else if (pos == -1) { //when the data is in the overflow
         return collisionMinusOnePosition(CF);
     }
-    else {
+    else { //when we are looking for the position, LINEAR SEARCH
         fstream BinaryFileR(NAME_FILE_DATA, ios::in | ios::binary);
         if (BinaryFileR.is_open()) {
             Dato r;
@@ -36,6 +37,31 @@ Dato readFromFile(string CF) {
         }
         throw "CF not found";
     }
+}
+
+int posInOverflow(string CF) { // linear search
+    Dato searched; int counter = 0;
+    const int eof = DB_COLLECTION * sizeof(Dato);
+    bool trovato = false;
+    fstream searchFile(NAME_FILE_DATA, ios::in | ios::binary);
+    while (trovato == false && !searchFile.eof()) {
+        searchFile.seekg(eof + counter * sizeof(Dato));
+        searchFile.read((char*)&searched, sizeof(Dato));
+        if (atos(searched.CF) == CF) trovato = true;
+        counter++;
+    }
+    searchFile.close();
+    return eof + (counter - 1) * sizeof(Dato);
+}
+
+int searchPosDato(string CF) {
+    int pos = collection[CF]; //PROBLEM: automatically create the new key-value pair with value = 0
+    if (pos == 0) {
+        collection.erase(CF); //SOLUTION: erase the key
+        return -1;
+    }
+    else if (pos == -1) return posInOverflow(CF);
+    else return pos * sizeof(Dato);
 
 }
 
@@ -46,6 +72,27 @@ void updateCollection() {
             csvOut << it->first << ',' << it->second << endl;
         }
         csvOut.close();
+    }
+}
+
+void updateDato(int pos, Dato dato) {
+    //dato.print();
+    cout << "Insert new user informations:" << endl;
+    string nome, cognome, classe, progetto, sede, periodo;
+    cin.ignore();
+    cout << "nome: ";   getline(cin, nome); copy(dato.nome, nome);
+    cout << "cognome: ";  getline(cin, cognome);  copy(dato.cognome, cognome);
+    cout << "classe: ";  getline(cin, classe);  copy(dato.classe, classe);
+    cout << "progetto: ";  getline(cin, progetto);  copy(dato.nomeProgetto, progetto);
+    cout << "sede: ";  getline(cin, sede);  copy(dato.sede, sede);
+    cout << "periodo: ";   getline(cin, periodo); copy(dato.periodo, periodo);
+
+    fstream out(NAME_FILE_DATA,ios::in | ios::out | ios::binary);
+
+    if (out.is_open()) {
+        out.seekp(pos);
+        out.write((char*)&dato, sizeof(Dato));
+        out.close();
     }
 }
 
@@ -66,7 +113,7 @@ void writeDataOnFile(Dato& data) {
         pos = -1;
     }
     //HARDCODE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO: delete this line
-    //pos = -1;
+   //pos = -1;
     collection.insert(pair<string, int>(atos(data.CF), pos)); //inserisco nella mappa CF come chiave e posizione come valore
     writeOnFile(data, pos);
     updateCollection();
