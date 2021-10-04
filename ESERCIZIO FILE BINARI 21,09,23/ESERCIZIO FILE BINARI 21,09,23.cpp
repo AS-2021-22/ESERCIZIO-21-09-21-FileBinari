@@ -1,4 +1,4 @@
-#pragma once
+#pragma once //THIS CODE HAS BEEN CREATED FOR 4-10-2021
 #include "Header.h"
 
 std::map<std::string, int> collection; //is defined extern in globals.h and needs to be declared in a cpp
