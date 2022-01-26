@@ -38,4 +38,4 @@ void copy(char a[], const char* b);
 
 void copy(char a[], string b);
 
-#endif // !FUNCTIONS_DECLARETIONS
+#endif

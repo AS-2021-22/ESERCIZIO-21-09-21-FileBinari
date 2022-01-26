@@ -1,23 +1,38 @@
 #include "Header.h"
 
+/**
+ * @brief char array to string
+ * 
+ * @param a char[]
+ * @return string 
+ */
 string atos(char a[]) {
     string r = "";
     for (int i = 0; a[i] != '\0'; i++)r += a[i];
     return r;
 }
 
+/**
+ * @brief convert a string to the HASH
+ * 
+ * @param CF string
+ * @return string 
+ */
 string hashString(string CF) {
     size_t a = hash<string>{}(CF);
     a = a % DB_COLLECTION;
     string hash = to_string(a);
     return hash;
 }
-
 int hashInt(string CF) {
     size_t a = hash<string>{}(CF);
     return a % DB_COLLECTION;
 }
 
+/**
+ * @brief user console input
+ * 
+ */
 void insertDato() {
 
     cin.ignore();
@@ -39,6 +54,11 @@ void insertDato() {
 
 }
 
+/**
+ * @brief console input menu
+ * 
+ * @return int (user choice)
+ */
 int menu() {
     int scelta = 0;
     cout << "Select the operation:" << endl;
@@ -56,6 +76,10 @@ int menu() {
     return scelta;
 }
 
+/**
+ * @brief load some data for test (never called in production)
+ * 
+ */
 void LoadTestData() {
     Dato a[] = {
          Dato("CRMGNN03A21H910M","Giovanni","Carminati","5IB","Lavapiatti","Rifugio Laghi Gemelli","15-06-21 / 06-09-21"),
@@ -66,7 +90,10 @@ void LoadTestData() {
 
     for (int i = 0; i < 4; i++)writeDataOnFile(a[i]);
 }
-
+/**
+ * @brief print all the information in the collection
+ * 
+ */
 void printAllDato() {
     for (map<string, int>::iterator it = collection.begin(); it != collection.end(); it++) {
         try { readFromFile(it->first).print(); }
@@ -74,13 +101,25 @@ void printAllDato() {
     }
 }
 
+/**
+ * @brief copy a char[] in a const char*
+ * 
+ * @param a char[]
+ * @param b const char*
+ */
 void copy(char a[], const char* b) {
     int i;
     for (i = 0; *(b + i) != '\0'; i++)a[i] = *(b + i);
     a[i] = '\0';
 }
 
-void copy(char a[], string b) {
+/**
+ * @brief copy a char[] in a string
+ * 
+ * @param a char[]  
+ * @param b string
+ */
+void copy(char a[], string& b) {
     int i;
     for (i = 0; b[i] != '\0'; i++)a[i] = b[i];
     a[i] = '\0';

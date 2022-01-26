@@ -3,6 +3,11 @@
 
 std::map<std::string, int> collection; //is defined extern in globals.h and needs to be declared in a cpp
 
+/**
+ * @brief program starts here!!
+ * 
+ * @return int 
+ */
 int main()
 {
     //createEmptyFile();
